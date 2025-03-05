@@ -1,5 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lista_contatos/controllers/contato_controller.dart';
 import 'package:lista_contatos/model/contato_model.dart';
+import 'package:lista_contatos/pages/contato_page.dart';
+import 'package:lista_contatos/pages/widgets/expasion_panel_contato_body_widget.dart';
+import 'package:lista_contatos/pages/widgets/expasion_panel_contato_header_widget.dart';
+import 'package:lista_contatos/pages/widgets/sem_contato_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,52 +17,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<ContatoModel> contatos = [
-    ContatoModel(nome: 'João', telefone: 123456789, email: 'joao@email.com'),
-    ContatoModel(nome: 'Maria', telefone: 987654321, email: 'maria@email.com'),
-    ContatoModel(nome: 'José', telefone: 123456789, email: 'jose@email.com'),
-    ContatoModel(nome: 'Pedro', telefone: 987654321, email: 'pedro@email.com'),
-    ContatoModel(nome: 'Paulo', telefone: 123456789, email: 'paulo@email.com'),
-    ContatoModel(nome: 'Ana', telefone: 987654321, email: 'ana@email.com'),
-    ContatoModel(nome: 'Lucas', telefone: 123456789, email: 'lucas@email.com'),
-    ContatoModel(
-      nome: 'Fernando',
-      telefone: 987654321,
-      email: 'fernando@email.com',
-    ),
-    ContatoModel(
-      nome: 'Rafael',
-      telefone: 123456789,
-      email: 'rafael@email.com',
-    ),
-    ContatoModel(
-      nome: 'Gustavo',
-      telefone: 987654321,
-      email: 'gustavo@email.com',
-    ),
-    ContatoModel(
-      nome: 'Ricardo',
-      telefone: 123456789,
-      email: 'ricardo@email.com',
-    ),
-    ContatoModel(
-      nome: 'Felipe',
-      telefone: 987654321,
-      email: 'felipe@email.com',
-    ),
-    ContatoModel(
-      nome: 'Carlos',
-      telefone: 123456789,
-      email: 'carlos@email.com',
-    ),
-    ContatoModel(
-      nome: 'Marcos',
-      telefone: 987654321,
-      email: 'marcos@email.com',
-    ),
-  ];
-
   late ScrollController scrollController;
+  ContatoController contatoController = ContatoController();
 
   @override
   void initState() {
@@ -63,12 +27,53 @@ class _HomePageState extends State<HomePage> {
       keepScrollOffset: true,
       initialScrollOffset: 0.0,
     );
+    _loadContatos();
   }
 
   @override
   void dispose() {
     super.dispose();
     scrollController.dispose();
+  }
+
+  _loadContatos() async {
+    await contatoController.load();
+  }
+
+  delContato(ContatoModel contatoModel) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Center(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                color: Colors.indigo,
+              ),
+              child: Icon(
+                Icons.question_mark_outlined,
+                size: 48,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          content: Text(
+            'Deseja excluir o contato ${contatoModel.nome!.toUpperCase()}?',
+            textAlign: TextAlign.center,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancelar'),
+            ),
+            TextButton(onPressed: () {}, child: Text('Excluir')),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -78,6 +83,20 @@ class _HomePageState extends State<HomePage> {
         title: const Text('Lista de Contatos', style: TextStyle(fontSize: 28)),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => ContatoPage(contatoModel: ContatoModel()),
+                ),
+              );
+            },
+            icon: Icon(Icons.add),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -89,9 +108,9 @@ class _HomePageState extends State<HomePage> {
               child: Stack(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 20),
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
+                    margin: EdgeInsets.only(top: 20),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -99,93 +118,80 @@ class _HomePageState extends State<HomePage> {
                         topRight: Radius.circular(25),
                       ),
                     ),
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.only(left: 4, top: 16, right: 4),
-                      child: ExpansionPanelList.radio(
-                        dividerColor: Colors.grey.shade200,
-                        elevation: 4,
-                        expansionCallback: (int panelIndex, bool isExpanded) {
-                          setState(() {
-                            contatos[panelIndex].isExpended =
-                                !contatos[panelIndex].isExpended;
-                          });
-                        },
-                        children:
-                            contatos.map<ExpansionPanel>((
-                              ContatoModel contato,
-                            ) {
-                              return ExpansionPanelRadio(
-                                value: contato,
-                                canTapOnHeader: true,
-                                headerBuilder: (
-                                  BuildContext context,
-                                  bool isExpanded,
-                                ) {
-                                  var imgUrl =
-                                      contato.urlFoto ??
-                                      'https://loremflickr.com/640/480/people?lock=${contato.id}';
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 8,
-                                    ),
-                                    child: ListTile(
-                                      leading: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundColor: Colors.indigo,
-                                            radius: 25,
-                                          ),
-                                          CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            radius: 23,
-                                            backgroundImage: NetworkImage(
-                                              imgUrl,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      title: Text(
-                                        contato.nome ?? '',
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                    ),
-                                  );
-                                },
-                                body: Container(
-                                  padding: EdgeInsets.all(16),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(Icons.phone),
-                                          Expanded(
-                                            child: Text(
-                                              contato.telefone.toString(),
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 8),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.email),
-                                          Expanded(
-                                            child: Text(
-                                              contato.email ?? '',
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 40),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+
+                    child: Obx(() {
+                      Widget w = SizedBox();
+                      if (contatoController.getState.value ==
+                          StateContatos.loading) {
+                        w = Center(child: CircularProgressIndicator());
+                      } else {
+                        if (contatoController.listaContatos.isEmpty) {
+                          w = SemContatoWidget();
+                        } else {
+                          Widget w = SizedBox();
+                          if (contatoController.getState.value ==
+                              StateContatos.loading) {
+                            w = Center(child: CircularProgressIndicator());
+                          } else if (contatoController.getState.value ==
+                              StateContatos.error) {
+                            w = Center(
+                              child: Text('Erro ao carregar os contatos!'),
+                            );
+                          } else {
+                            if (contatoController.listaContatos.isEmpty) {
+                              w = Center(
+                                child: Text(
+                                  'Nenhum contato cadastrado!',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.grey,
                                   ),
                                 ),
                               );
-                            }).toList(),
-                      ),
-                    ),
+                            } else {
+                              List<ContatoModel> lista =
+                                  contatoController.listaContatos;
+
+                              w = SingleChildScrollView(
+                                child: ExpansionPanelList.radio(
+                                  dividerColor: Colors.grey.shade200,
+                                  key: Key(Random().nextInt(10).toString()),
+                                  expansionCallback: (panelIndex, isExpanded) {
+                                    lista[panelIndex].isExpended = !isExpanded;
+                                  },
+                                  children:
+                                      lista.map<ExpansionPanel>((contato) {
+                                        return ExpansionPanelRadio(
+                                          value: contato,
+                                          headerBuilder: (context, isExpanded) {
+                                            return ExpasionPanelRadioContatoHeaderWidget(
+                                              contato: contato,
+                                            );
+                                          },
+                                          body:
+                                              ExpasionPanelRadioContatoBodyWidget(
+                                                contato: contato,
+                                                fn: delContato,
+                                              ),
+                                          canTapOnHeader: true,
+                                        );
+                                      }).toList(),
+                                ),
+                              );
+                            }
+                          }
+
+                          return w;
+                        }
+                      }
+
+                      return w;
+                    }),
                   ),
                 ],
               ),

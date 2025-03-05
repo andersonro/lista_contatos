@@ -15,6 +15,7 @@ class ContatoModel {
     telefone = json['telefone'];
     email = json['email'];
     urlFoto = json['urlFoto'];
+    isExpended = isExpended;
   }
 
   Map<String, dynamic> toJson() {
@@ -23,6 +24,7 @@ class ContatoModel {
     data['telefone'] = telefone;
     data['email'] = email;
     data['urlFoto'] = urlFoto;
+    data['isExpended'] = isExpended;
     return data;
   }
 }
