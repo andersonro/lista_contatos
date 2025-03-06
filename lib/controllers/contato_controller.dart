@@ -16,6 +16,7 @@ class ContatoController extends GetxController {
     _state.value = StateContatos.loading;
     try {
       List<ContatoModel> contatos = await contatoRepository.getContatos();
+      _listaContatos.clear();
       _listaContatos.addAll(contatos);
       _listaContatos.refresh();
       _state.value = StateContatos.success;
@@ -25,18 +26,33 @@ class ContatoController extends GetxController {
     }
   }
 
-  Future addContato(ContatoModel contato) async {
+  Future saveContato(ContatoModel contato) async {
     _state.value = StateContatos.loading;
     try {
-      await contatoRepository.addContato(contato);
-      //_listaContatos.add(contato);
-      //_listaContatos.refresh();
+      if (contato.id == null) {
+        await contatoRepository.addContato(contato);
+      } else {
+        await contatoRepository.editContato(contato);
+      }
       await load();
       _state.value = StateContatos.success;
     } catch (e) {
       _state.value = StateContatos.error;
-      //throw CustomException(message: e.toString());
-      throw Exception(e.toString());
+      throw CustomException(message: e.toString());
+    }
+  }
+
+  Future delContato(ContatoModel contato) async {
+    _state.value = StateContatos.loading;
+    try {
+      if (contato.id != null) {
+        await contatoRepository.deleteContato(contato.id!);
+        await load();
+      }
+      _state.value = StateContatos.success;
+    } catch (e) {
+      _state.value = StateContatos.error;
+      throw CustomException(message: e.toString());
     }
   }
 }

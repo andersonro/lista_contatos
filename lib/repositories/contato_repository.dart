@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:lista_contatos/model/contato_model.dart';
 import 'package:lista_contatos/repositories/data/db.dart';
 import 'package:sqflite/sqflite.dart';
@@ -6,35 +5,31 @@ import 'package:sqflite/sqflite.dart';
 class ContatoRepository {
   late Database db;
 
-  ContatoRepository() {
-    DB.instance.database.then((value) => db = value);
-  }
-
   Future addContato(ContatoModel contato) async {
-    final db = await DB.instance.database;
-
-    //await DB.instance.database;
-    debugPrint('Contato: ${contato.toJson()}');
-    return await db.insert('contatos', contato.toJson());
+    db = await DB.instance.database;
+    var save = await db.insert('contatos', contato.toJson());
+    return save;
   }
 
   Future editContato(ContatoModel contato) async {
-    final db = await DB.instance.database;
-    return await db.update(
+    db = await DB.instance.database;
+    var save = await db.update(
       'contatos',
       contato.toJson(),
       where: 'id = ?',
       whereArgs: [contato.id],
     );
+    return save;
   }
 
   Future deleteContato(int id) async {
-    final db = await DB.instance.database;
-    return await db.delete('contatos', where: 'id = ?', whereArgs: [id]);
+    db = await DB.instance.database;
+    var delete = await db.delete('contatos', where: 'id = ?', whereArgs: [id]);
+    return delete;
   }
 
   Future<List<ContatoModel>> getContatos() async {
-    final db = await DB.instance.database;
+    db = await DB.instance.database;
     List<Map<String, dynamic>> contatos = await db.query('contatos');
     return contatos.map((e) => ContatoModel.fromJson(e)).toList();
   }

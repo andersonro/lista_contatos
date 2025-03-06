@@ -1,7 +1,5 @@
-import 'dart:math';
-
 class ContatoModel {
-  int id = Random().nextInt(100);
+  int? id;
   String? nome;
   int? telefone;
   String? email;
@@ -17,6 +15,7 @@ class ContatoModel {
   });
 
   ContatoModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     nome = json['nome'];
     telefone = json['telefone'];
     email = json['email'];
@@ -26,6 +25,7 @@ class ContatoModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
     data['nome'] = nome;
     data['telefone'] = telefone;
     data['email'] = email;

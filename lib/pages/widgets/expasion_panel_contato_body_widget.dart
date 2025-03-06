@@ -39,7 +39,12 @@ class ExpasionPanelRadioContatoBodyWidget extends StatelessWidget {
                     children: [
                       Icon(Icons.email, size: 28),
                       SizedBox(width: 8),
-                      Text('${contato.email}', style: TextStyle(fontSize: 14)),
+                      Expanded(
+                        child: Text(
+                          '${contato.email}',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
                     ],
                   ),
               ],

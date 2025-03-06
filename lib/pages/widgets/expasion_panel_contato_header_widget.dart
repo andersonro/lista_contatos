@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:lista_contatos/model/contato_model.dart';
 
@@ -10,11 +12,6 @@ class ExpasionPanelRadioContatoHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Contato URL: ${contato.urlFoto.toString()}');
-    var imgUrl =
-        contato.urlFoto != null
-            ? 'https://loremflickr.com/640/480/people?lock=${contato.id}'
-            : 'https://loremflickr.com/640/480/people?lock=${contato.id}';
     return ListTile(
       leading: Stack(
         alignment: Alignment.center,
@@ -23,7 +20,12 @@ class ExpasionPanelRadioContatoHeaderWidget extends StatelessWidget {
           CircleAvatar(
             backgroundColor: Colors.white,
             radius: 23,
-            backgroundImage: NetworkImage(imgUrl),
+            backgroundImage:
+                contato.urlFoto != null
+                    ? Image.file(File(contato.urlFoto!)).image
+                    : Image.network(
+                      'https://cdn-icons-png.flaticon.com/512/149/149071.png',
+                    ).image,
           ),
         ],
       ),

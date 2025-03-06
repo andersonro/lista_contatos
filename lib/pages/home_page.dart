@@ -41,6 +41,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   delContato(ContatoModel contatoModel) async {
+    await contatoController.delContato(contatoModel);
+  }
+
+  confirmacaoDeletaContato(ContatoModel contatoModel) async {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -69,7 +73,13 @@ class _HomePageState extends State<HomePage> {
               },
               child: Text('Cancelar'),
             ),
-            TextButton(onPressed: () {}, child: Text('Excluir')),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                delContato(contatoModel);
+              },
+              child: Text('Excluir'),
+            ),
           ],
         );
       },
@@ -178,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                                           body:
                                               ExpasionPanelRadioContatoBodyWidget(
                                                 contato: contato,
-                                                fn: delContato,
+                                                fn: confirmacaoDeletaContato,
                                               ),
                                           canTapOnHeader: true,
                                         );

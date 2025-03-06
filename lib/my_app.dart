@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lista_contatos/pages/home_page.dart';
+import 'package:lista_contatos/pages/splash_screen_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: const HomePage(),
+      home: const SplashScreenPage(),
     );
   }
 }
