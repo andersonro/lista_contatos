@@ -1,16 +1,21 @@
-# lista_contatos
+# APP LISTA DE CONTATOS
 
-A new Flutter project.
+App para controle de contatos.
 
-## Getting Started
+## Desafio Bootcamp - [DIO](https://web.dio.me/)
 
-This project is a starting point for a Flutter application.
+### Requisitos do Desafio
+- Aplicação em Flutter​
+- Persistência de dados em banco local
+- Cadastro de pessoa com foto de perfil​
+- Salvar apenas o path da imagem na base de dados
+- Listar das pessoas em uma lista com sua respectiva foto​
 
-A few resources to get you started if this is your first Flutter project:
+### Pacotes utilizado
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Getx](https://pub.dev/packages/get) - Gerenciador de estado
+- [sqflite](https://pub.dev/packages/sqflite) - Banco de dados
+- [brasil_fields](https://pub.dev/packages/brasil_fields) - Validação de campos
+- [image_picker](https://pub.dev/packages/image_picker) - Seleção de imagem
+- [gal](https://pub.dev/packages/gal) - Galeria de imagens
+- [image_cropper](https://pub.dev/packages/image_cropper) - Recorte de imagem
