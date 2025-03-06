@@ -1,4 +1,3 @@
-import 'package:lista_contatos/model/contato_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DB {
@@ -21,7 +20,7 @@ class DB {
     return await openDatabase('db_contatos', version: 1, onCreate: _onCreate);
   }
 
-  _onCreate(Database db, int version) async {
+  Future _onCreate(Database db, int version) async {
     await db.execute(_contatos);
     db.close();
   }
@@ -32,33 +31,8 @@ class DB {
         nome TEXT,
         telefone INTEGER,
         email TEXT,
-        urlFoto TEXT
+        urlFoto TEXT,
+        isExpended INTEGER
       )
     ''';
-
-  Future addContato(ContatoModel contato) async {
-    final db = await instance.database;
-    return await db.insert('contatos', contato.toJson());
-  }
-
-  Future editContato(ContatoModel contato) async {
-    final db = await instance.database;
-    return await db.update(
-      'contatos',
-      contato.toJson(),
-      where: 'id = ?',
-      whereArgs: [contato.id],
-    );
-  }
-
-  Future deleteContato(int id) async {
-    final db = await instance.database;
-    return await db.delete('contatos', where: 'id = ?', whereArgs: [id]);
-  }
-
-  Future<List<ContatoModel>> getContatos() async {
-    final db = await instance.database;
-    List<Map<String, dynamic>> contatos = await db.query('contatos');
-    return contatos.map((e) => ContatoModel.fromJson(e)).toList();
-  }
 }

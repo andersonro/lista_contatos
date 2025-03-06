@@ -6,16 +6,22 @@ class ContatoModel {
   int? telefone;
   String? email;
   String? urlFoto;
-  bool isExpended = false;
+  int? isExpended = 0;
 
-  ContatoModel({this.nome, this.telefone, this.email, this.urlFoto});
+  ContatoModel({
+    this.nome,
+    this.telefone,
+    this.email,
+    this.urlFoto,
+    this.isExpended,
+  });
 
   ContatoModel.fromJson(Map<String, dynamic> json) {
     nome = json['nome'];
     telefone = json['telefone'];
     email = json['email'];
     urlFoto = json['urlFoto'];
-    isExpended = isExpended;
+    isExpended = json['isExpended'];
   }
 
   Map<String, dynamic> toJson() {

@@ -10,9 +10,11 @@ class ExpasionPanelRadioContatoHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Contato URL: ${contato.urlFoto.toString()}');
     var imgUrl =
-        contato.urlFoto ??
-        'https://loremflickr.com/640/480/people?lock=${contato.id}';
+        contato.urlFoto != null
+            ? 'https://loremflickr.com/640/480/people?lock=${contato.id}'
+            : 'https://loremflickr.com/640/480/people?lock=${contato.id}';
     return ListTile(
       leading: Stack(
         alignment: Alignment.center,

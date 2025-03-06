@@ -1,8 +1,9 @@
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:lista_contatos/controllers/contato_controller.dart';
 import 'package:lista_contatos/model/contato_model.dart';
+import 'package:lista_contatos/pages/home_page.dart';
 
 class ContatoPage extends StatefulWidget {
   final ContatoModel? contatoModel;
@@ -13,7 +14,25 @@ class ContatoPage extends StatefulWidget {
 }
 
 class _ContatoPageState extends State<ContatoPage> {
+  ContatoController contatoController = ContatoController();
   final _formKey = GlobalKey<FormState>();
+
+  _addContato(ContatoModel contatoModel) async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      ContatoModel contato = ContatoModel(
+        nome: contatoModel.nome,
+        telefone: contatoModel.telefone,
+        email: contatoModel.email,
+        urlFoto: contatoModel.urlFoto ?? '',
+        isExpended: contatoModel.isExpended ?? 1,
+      );
+      debugPrint('Contato: ${contato.toJson()}');
+      await contatoController.addContato(contato);
+      Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -61,8 +80,16 @@ class _ContatoPageState extends State<ContatoPage> {
                           labelStyle: TextStyle(color: Colors.indigo),
                         ),
                         keyboardType: TextInputType.text,
-                        onSaved: (value) {},
+                        onSaved: (value) {
+                          widget.contatoModel!.nome = value;
+                        },
                         onTap: () {},
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Campo obrigatório';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 8),
                       TextFormField(
@@ -93,8 +120,23 @@ class _ContatoPageState extends State<ContatoPage> {
                           labelStyle: TextStyle(color: Colors.indigo),
                         ),
                         keyboardType: TextInputType.text,
-                        onSaved: (value) {},
+                        onSaved: (value) {
+                          if (value != null) {
+                            widget.contatoModel!.telefone = int.parse(
+                              UtilBrasilFields.obterTelefone(
+                                value,
+                                mascara: false,
+                              ),
+                            );
+                          }
+                        },
                         onTap: () {},
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Campo obrigatório';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 8),
                       TextFormField(
@@ -115,7 +157,15 @@ class _ContatoPageState extends State<ContatoPage> {
                           labelStyle: TextStyle(color: Colors.indigo),
                         ),
                         keyboardType: TextInputType.emailAddress,
-                        onSaved: (value) {},
+                        onSaved: (value) {
+                          widget.contatoModel!.email = value;
+                        },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira um e-mail válido';
+                          }
+                          return null;
+                        },
                         onTap: () {},
                       ),
                       SizedBox(height: 8),
@@ -135,7 +185,9 @@ class _ContatoPageState extends State<ContatoPage> {
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                            await _addContato(widget.contatoModel!);
+                          },
                           icon: Icon(Icons.save, size: 22),
                           label: Padding(
                             padding: const EdgeInsets.all(16.0),

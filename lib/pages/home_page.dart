@@ -162,8 +162,10 @@ class _HomePageState extends State<HomePage> {
                                   dividerColor: Colors.grey.shade200,
                                   key: Key(Random().nextInt(10).toString()),
                                   expansionCallback: (panelIndex, isExpanded) {
-                                    lista[panelIndex].isExpended = !isExpanded;
+                                    lista[panelIndex].isExpended =
+                                        isExpanded == true ? 1 : 0;
                                   },
+
                                   children:
                                       lista.map<ExpansionPanel>((contato) {
                                         return ExpansionPanelRadio(
